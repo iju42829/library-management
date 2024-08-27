@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: library-management
+
+  profiles:
+    include: db, log, web
