@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/header/common-header :: head(~{::title})}">
+    <meta charset="UTF-8">
+    <title>회원 가입</title>
+</head>
+<body class="bg-light">
+<nav th:replace="~{layouts/navbar :: nav}"></nav>
+
+<main class="content container">
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6 col-sm-8 mt-5">
+
+            <h2 class="text-center mb-4">회원 가입</h2>
+
+            <form th:object="${memberCreateRequest}" th:action="@{/signUp}" th:method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username"
+                           th:field="*{username}" th:errorclass="is-invalid" placeholder="Enter your username" >
+                    <p th:errors="*{username}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email"
+                           th:field="*{email}" th:errorclass="is-invalid" placeholder="Enter your email" >
+                    <p th:errors="*{email}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password"
+                           th:field="*{password}" th:errorclass="is-invalid" placeholder="Enter your password" >
+                    <p th:errors="*{password}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword"
+                           th:field="*{confirmPassword}" th:errorclass="is-invalid" placeholder="Confirm your password" >
+                    <p th:errors="*{confirmPassword}" class="text-danger"></p>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-4">회원 가입</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layouts/footer :: footer}"></footer>
+
+</body>
+</html>

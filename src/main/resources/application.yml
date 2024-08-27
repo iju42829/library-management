@@ -4,3 +4,6 @@ spring:
 
   profiles:
     include: db, log, web
+
+  messages:
+    basename: errors
