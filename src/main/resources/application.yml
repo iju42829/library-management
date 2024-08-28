@@ -6,4 +6,4 @@ spring:
     include: db, log, web
 
   messages:
-    basename: errors
+    basename: errors, messages
