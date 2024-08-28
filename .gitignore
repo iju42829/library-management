@@ -40,3 +40,4 @@ out/
 /src/main/resources/application-log.yml
 /src/main/resources/application-web.yml
 /src/main/resources/errors.properties
+/src/main/resources/messages.properties
