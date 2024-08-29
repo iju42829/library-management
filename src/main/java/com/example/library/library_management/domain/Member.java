@@ -1,6 +1,7 @@
 package com.example.library.library_management.domain;
 
 import com.example.library.library_management.auth.constants.Role;
+import com.example.library.library_management.domain.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,13 +11,13 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     private String username;
 
     @Column(nullable = false)
@@ -26,7 +27,7 @@ public class Member {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Role role;
 
     private Member(String username, String password, String email, Role role) {

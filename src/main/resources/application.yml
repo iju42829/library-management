@@ -3,7 +3,7 @@ spring:
     name: library-management
 
   profiles:
-    include: db, log, web
+    include: db, log, web, admin
 
   messages:
     basename: errors, messages

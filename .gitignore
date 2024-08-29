@@ -41,3 +41,4 @@ out/
 /src/main/resources/application-web.yml
 /src/main/resources/errors.properties
 /src/main/resources/messages.properties
+/src/main/resources/application-admin.properties
