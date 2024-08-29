@@ -10,4 +10,8 @@ public enum Role {
     public String getSimpleName() {
         return this.name();
     }
+
+    public static Role fromString(String roleName) {
+        return Role.valueOf(roleName.substring(5));
+    }
 }

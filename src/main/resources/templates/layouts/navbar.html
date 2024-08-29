@@ -24,8 +24,20 @@
                     </li>
                 </ul>
                 <div class="d-flex">
-                    <a class="btn btn-outline-light me-2" th:href="@{/login}" role="button">Login</a>
-                    <a class="btn btn-warning" th:href="@{/signUp}" role="button">Sign-up</a>
+                    <th:block th:if="${memberSessionDto == null}">
+                        <a class="btn btn-outline-light me-2" th:href="@{/login}" role="button">Login</a>
+                        <a class="btn btn-warning" th:href="@{/signUp}" role="button">Sign-up</a>
+                    </th:block>
+
+                    <th:block th:if="${memberSessionDto != null}">
+                        <a class="btn btn-outline-light me-2" th:href="@{/}"
+                           th:if="${memberSessionDto.isAdmin}"
+                           role="button">관리 콘솔</a>
+
+                        <a class="btn btn-warning" th:href="@{/}"
+                           role="button">마이페이지</a>
+                    </th:block>
+
                 </div>
             </div>
         </div>
