@@ -23,6 +23,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers( "/", "/signUp", "/login").permitAll()
+                        .requestMatchers("/books/add").hasRole(ADMIN.getSimpleName())
                         .anyRequest().authenticated());
 
         http
