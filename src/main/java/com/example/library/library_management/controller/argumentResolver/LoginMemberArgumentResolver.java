@@ -1,6 +1,7 @@
 package com.example.library.library_management.controller.argumentResolver;
 
 import com.example.library.library_management.auth.constants.Role;
+import com.example.library.library_management.auth.constants.SecurityConstants;
 import com.example.library.library_management.dto.member.MemberSessionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -38,6 +39,11 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
+
+        if (auth.getAuthority().equals(SecurityConstants.ROLE_ANONYMOUS)) {
+            return null;
+        }
+
         Role role = Role.fromString(auth.getAuthority());
 
         boolean isAdmin = Role.ADMIN == role;

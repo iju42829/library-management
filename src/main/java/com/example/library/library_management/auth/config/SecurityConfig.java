@@ -2,6 +2,7 @@ package com.example.library.library_management.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,12 +24,16 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers( "/", "/signUp", "/login").permitAll()
+                        .requestMatchers("/books/add", "/books/*/edit").hasRole(ADMIN.getSimpleName())
+                        .requestMatchers(HttpMethod.DELETE, "/books/*").hasRole(ADMIN.getSimpleName())
+                        .requestMatchers(HttpMethod.PATCH, "/books/*").hasRole(ADMIN.getSimpleName())
                         .anyRequest().authenticated());
 
         http
                 .formLogin((auth) -> auth
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/")
                         .failureUrl("/login?error=true")
                         .permitAll());
 

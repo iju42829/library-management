@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/header/common-header :: head(~{::title})}">
+    <meta charset="UTF-8">
+    <title th:text="${bookDetailResponse.title}"></title>
+</head>
+<body>
+<nav th:replace="~{layouts/navbar :: nav}"></nav>
+
+<main class="content container py-5">
+    <section class="mb-4 shadow-sm">
+        <article class="card">
+            <div class="row g-0">
+                <figure class="col-8 mb-0">
+                    <img src="#" class="img-fluid rounded-start" alt="Book Cover">
+                    <figcaption class="visually-hidden"></figcaption>
+                </figure>
+                <div class="col-4 d-flex align-items-center">
+                    <div class="card-body">
+                        <header>
+                            <h5 class="card-title" th:text="${bookDetailResponse.title}"></h5>
+                        </header>
+                        <p class="card-text">남은 수량: <span class="text-success fw-bold" th:text="${bookDetailResponse.quantity}"></span></p>
+                        <a href="#" class="btn btn-primary">대여 하기</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="card p-3 shadow-sm">
+        <header>
+            <h5 class="mb-3">기본 정보</h5>
+        </header>
+        <table class="table table-borderless mb-0">
+            <tbody>
+            <tr>
+                <th scope="row" style="width: 150px;">저자</th>
+                <td th:text="${bookDetailResponse.author}"></td>
+            </tr>
+            <tr>
+                <th scope="row">ISBN</th>
+                <td th:text="${bookDetailResponse.isbn}"></td>
+            </tr>
+            <tr>
+                <th scope="row">출시일자</th>
+                <td th:text="${#temporals.format(bookDetailResponse.releaseDate, 'yyyy년 MM월 dd일')}"></td>
+            </tr>
+            <tr>
+                <th scope="row">페이지 수</th>
+                <td th:text="${bookDetailResponse.page}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>

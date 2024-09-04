@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/header/common-header :: head(~{::title})}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="~{layouts/navbar :: nav}"></nav>
+
+<main class="content container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6 col-sm-8 mt-5">
+            <h2 class="text-center mb-4">도서 등록</h2>
+
+            <form th:object="${bookCreateRequest}" th:action="@{/books}" th:method="post">
+                <div class="mb-3">
+                    <label for="title" class="form-label">책 제목</label>
+                    <input type="text" class="form-control" id="title" th:field="*{title}" th:errorclass="is-invalid" placeholder="책 제목을 입력하세요" >
+                    <p th:errors="*{title}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label for="author" class="form-label">저자</label>
+                    <input type="text" class="form-control" id="author" th:field="*{author}" th:errorclass="is-invalid" placeholder="저자 이름을 입력하세요" >
+                    <p th:errors="*{author}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label for="isbn" class="form-label">ISBN</label>
+                    <input type="text" class="form-control" id="isbn" th:field="*{isbn}" th:errorclass="is-invalid" placeholder="ISBN 번호를 입력하세요" >
+                    <p th:errors="*{isbn}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label for="releaseDate" class="form-label">출판 연도</label>
+                    <input type="date" class="form-control" id="releaseDate" th:field="*{releaseDate}" th:errorclass="is-invalid">
+                    <p th:errors="*{releaseDate}" class="text-danger"></p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="quantity" class="form-label">수량</label>
+                        <input type="number" class="form-control" id="quantity" th:field="*{quantity}" th:errorclass="is-invalid" placeholder="수량 입력" >
+                        <p th:errors="*{quantity}" class="text-danger"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="page" class="form-label">페이지</label>
+                        <input type="number" class="form-control" id="page" th:field="*{page}" th:errorclass="is-invalid" placeholder="페이지 수 입력" >
+                        <p th:errors="*{page}" class="text-danger"></p>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-4">도서 등록</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>
