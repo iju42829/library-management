@@ -2,6 +2,7 @@ package com.example.library.library_management.controller;
 
 import com.example.library.library_management.dto.book.request.BookCreateRequest;
 import com.example.library.library_management.dto.book.request.BookUpdateRequest;
+import com.example.library.library_management.dto.book.response.BookDetailResponse;
 import com.example.library.library_management.service.book.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,16 @@ public class BookController {
 
     private final BookService bookService;
 
+    
+    @GetMapping("/{bookId}")
+    public String retrieveBook(@PathVariable("bookId") Long bookId, Model model) {
+        BookDetailResponse bookDetailResponse = bookService.getBookForDetail(bookId);
+
+        model.addAttribute("bookDetailResponse", bookDetailResponse);
+
+        return "book/detail-books";
+    }
+    
     @GetMapping("/add")
     public String addBookForm(Model model) {
         model.addAttribute("bookCreateRequest", new BookCreateRequest());
@@ -44,7 +55,7 @@ public class BookController {
     @GetMapping("/{bookId}/edit")
     public String editBookForm(Model model, @PathVariable Long bookId) {
 
-        BookUpdateRequest bookUpdateRequest = bookService.getBook(bookId);
+        BookUpdateRequest bookUpdateRequest = bookService.getBookForUpdate(bookId);
 
         model.addAttribute("bookId", bookId);
         model.addAttribute("bookUpdateRequest", bookUpdateRequest);
