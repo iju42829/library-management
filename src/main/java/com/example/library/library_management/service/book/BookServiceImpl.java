@@ -3,6 +3,7 @@ package com.example.library.library_management.service.book;
 import com.example.library.library_management.domain.Book;
 import com.example.library.library_management.dto.book.request.BookCreateRequest;
 import com.example.library.library_management.dto.book.request.BookUpdateRequest;
+import com.example.library.library_management.dto.book.response.BookDetailResponse;
 import com.example.library.library_management.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,10 +49,17 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public BookUpdateRequest getBook(Long bookId) {
+    public BookUpdateRequest getBookForUpdate(Long bookId) {
         Book book = bookRepository.findById(bookId).orElseThrow();
 
         return BookUpdateRequest.fromBook(book);
+    }
+
+    @Override
+    public BookDetailResponse getBookForDetail(Long bookId) {
+        Book book = bookRepository.findById(bookId).orElseThrow();
+
+        return BookDetailResponse.fromBook(book);
     }
 
     @Override
