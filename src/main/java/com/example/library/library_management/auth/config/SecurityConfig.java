@@ -23,7 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers( "/", "/signUp", "/login").permitAll()
+                        .requestMatchers( "/", "/signUp", "/login", "/books").permitAll()
                         .requestMatchers("/books/add", "/books/*/edit").hasRole(ADMIN.getSimpleName())
                         .requestMatchers(HttpMethod.DELETE, "/books/*").hasRole(ADMIN.getSimpleName())
                         .requestMatchers(HttpMethod.PATCH, "/books/*").hasRole(ADMIN.getSimpleName())
