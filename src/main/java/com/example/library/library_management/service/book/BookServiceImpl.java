@@ -4,9 +4,13 @@ import com.example.library.library_management.domain.Book;
 import com.example.library.library_management.dto.book.request.BookCreateRequest;
 import com.example.library.library_management.dto.book.request.BookUpdateRequest;
 import com.example.library.library_management.dto.book.response.BookDetailResponse;
+import com.example.library.library_management.dto.book.response.BookListResponse;
+import com.example.library.library_management.exception.book.BookNotFoundException;
 import com.example.library.library_management.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +39,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Long updateBook(Long bookId, BookUpdateRequest bookUpdateRequest) {
-        Book book = bookRepository.findById(bookId).orElseThrow();
+        Book book = bookRepository
+                .findById(bookId)
+                .orElseThrow(BookNotFoundException::new);
 
         book.update(bookUpdateRequest.getTitle(),
                 bookUpdateRequest.getAuthor(),
@@ -47,17 +53,26 @@ public class BookServiceImpl implements BookService {
         return book.getId();
     }
 
+    public Slice<BookListResponse> getBooks(Pageable pageable) {
+        return bookRepository
+                .findAll(pageable)
+                .map(BookListResponse::fromBook);
+    }
 
     @Override
     public BookUpdateRequest getBookForUpdate(Long bookId) {
-        Book book = bookRepository.findById(bookId).orElseThrow();
+        Book book = bookRepository
+                .findById(bookId)
+                .orElseThrow(BookNotFoundException::new);
 
         return BookUpdateRequest.fromBook(book);
     }
 
     @Override
     public BookDetailResponse getBookForDetail(Long bookId) {
-        Book book = bookRepository.findById(bookId).orElseThrow();
+        Book book = bookRepository
+                .findById(bookId)
+                .orElseThrow(BookNotFoundException::new);
 
         return BookDetailResponse.fromBook(book);
     }
