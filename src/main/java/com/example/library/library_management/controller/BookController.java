@@ -1,16 +1,26 @@
 package com.example.library.library_management.controller;
 
+import com.example.library.library_management.controller.argumentResolver.Login;
 import com.example.library.library_management.dto.book.request.BookCreateRequest;
 import com.example.library.library_management.dto.book.request.BookUpdateRequest;
 import com.example.library.library_management.dto.book.response.BookDetailResponse;
+import com.example.library.library_management.dto.book.response.BookListResponse;
+import com.example.library.library_management.dto.member.MemberSessionDto;
 import com.example.library.library_management.service.book.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static com.example.library.library_management.controller.constants.BookConstants.*;
 
 @Slf4j
 @Controller
@@ -20,6 +30,28 @@ public class BookController {
 
     private final BookService bookService;
 
+    @ModelAttribute("memberSessionDto")
+    public MemberSessionDto addMemberSessionDto(@Login MemberSessionDto memberSessionDto) {
+        return memberSessionDto;
+    }
+
+    @GetMapping
+    public String retrieveBookList(@RequestParam(defaultValue = "1") int page,
+                                   Model model) {
+        PageRequest pageRequest = PageRequest
+                .of(page - 1, DEFAULT_PAGE_SIZE, Sort.by(Sort.Direction.DESC, DEFAULT_SORT_FIELD));
+
+        Slice<BookListResponse> books = bookService.getBooks(pageRequest);
+
+        List<BookListResponse> content = books.getContent();
+
+        model.addAttribute("books", content);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("hasNextPage", books.hasNext());
+        model.addAttribute("hasPreviousPage", books.hasPrevious());
+
+        return "book/list-books";
+    }
     
     @GetMapping("/{bookId}")
     public String retrieveBook(@PathVariable("bookId") Long bookId, Model model) {
