@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class Book extends BaseEntity {
     @Column(nullable = false)
     private Integer page;
 
+    @Min(0)
     @Column(nullable = false)
     private Integer quantity;
 
@@ -57,6 +59,10 @@ public class Book extends BaseEntity {
         this.isbn = isbn;
         this.releaseDate = releaseDate;
         this.page = page;
+        this.quantity = quantity;
+    }
+
+    public void changeQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 }
