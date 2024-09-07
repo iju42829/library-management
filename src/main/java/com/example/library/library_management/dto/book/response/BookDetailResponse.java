@@ -17,6 +17,9 @@ import java.time.LocalDate;
 public class BookDetailResponse {
 
     @NotBlank
+    private Long id;
+
+    @NotBlank
     private String title;
 
     @NotBlank
@@ -39,6 +42,7 @@ public class BookDetailResponse {
 
     public static BookDetailResponse fromBook(Book book) {
         return new BookDetailResponse(
+                book.getId(),
                 book.getTitle(),
                 book.getAuthor(),
                 book.getIsbn(),

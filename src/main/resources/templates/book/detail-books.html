@@ -21,7 +21,10 @@
                             <h5 class="card-title" th:text="${bookDetailResponse.title}"></h5>
                         </header>
                         <p class="card-text">남은 수량: <span class="text-success fw-bold" th:text="${bookDetailResponse.quantity}"></span></p>
-                        <a href="#" class="btn btn-primary">대여 하기</a>
+                        <form th:action="@{/book-reservations}" method="post" class="mt-3">
+                            <input type="hidden" name="bookId" th:value="${bookDetailResponse.id}">
+                            <button type="submit" class="btn btn-primary">대여 하기</button>
+                        </form>
                     </div>
                 </div>
             </div>
