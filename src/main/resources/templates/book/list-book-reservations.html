@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layouts/header/common-header :: head(~{::title})}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="~{layouts/navbar :: nav}"></nav>
+
+<main class="content container mt-4">
+    <section>
+        <h2 class="mb-4">도서 예약 조회</h2>
+        <form th:action="@{/book-reservations}" th:method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="username" class="form-control rounded" placeholder="사용자 이름 입력" aria-label="Username">
+                <button class="btn btn-primary ms-2 rounded" type="submit">검색</button>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>사용자 명</th>
+                    <th>도서명</th>
+                    <th>예약 상태</th>
+                    <th>예약 시작일</th>
+                    <th>예약 만료일</th>
+                    <th>대출 시작일</th>
+                    <th>대출 만기일</th>
+                    <th>작업</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="bookReservation : ${bookReservationListResponses}">
+                    <td th:text="${bookReservation.username}"></td>
+                    <td th:text="${bookReservation.title}"></td>
+                    <td th:text="${bookReservation.reservationStatus}"></td>
+                    <td th:text="${bookReservation.reservationDate}"></td>
+                    <td th:text="${bookReservation.expiryReservationDate}"></td>
+                    <td th:text="${bookReservation.loanDate}"></td>
+                    <td th:text="${bookReservation.loanDeadlineDate}"></td>
+                    <td>
+                        <form th:action="@{|/book-reservations/${bookReservation.id}/approve|}" th:method="patch"
+                              th:if="${bookReservation.reservationStatus ==
+                              T(com.example.library.library_management.domain.constants.ReservationStatus).RESERVATION}" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm">승인</button>
+                        </form>
+
+                        <form th:action="@{|/book-reservations/${bookReservation.id}/return|}" th:method="patch"
+                              th:if="${bookReservation.reservationStatus ==
+                              T(com.example.library.library_management.domain.constants.ReservationStatus).APPROVED}" class="d-inline">
+                            <button type="submit" class="btn btn-warning btn-sm">반납</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<nav aria-label="Page navigation example" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:if="${hasPreviousPage}">
+            <a class="page-link" th:href="@{/book-reservations(page=${currentPage - 1}, username=${searchUsername})}">
+                <span aria-hidden="true">이전</span>
+            </a>
+        </li>
+        <li class="page-item active">
+            <span class="page-link" th:text="${currentPage}"></span>
+        </li>
+        <li class="page-item" th:if="${hasNextPage}">
+            <a class="page-link" th:href="@{/book-reservations(page=${currentPage + 1}, username=${searchUsername})}">
+                <span aria-hidden="true">다음</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<footer th:replace="~{layouts/footer :: footer}"></footer>
+</body>
+</html>
