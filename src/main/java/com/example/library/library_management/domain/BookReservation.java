@@ -30,7 +30,7 @@ public class BookReservation extends BaseTimeEntity {
     private LocalDate expiryReservationDate;
 
     private LocalDate loanDate;
-    private LocalDate LoanDeadlineDate;
+    private LocalDate loanDeadlineDate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -50,5 +50,14 @@ public class BookReservation extends BaseTimeEntity {
                                                         LocalDate expiryReservationDate, ReservationStatus reservationStatus) {
 
         return new BookReservation(member, book, reservationDate, expiryReservationDate, reservationStatus);
+    }
+
+    public void changeStatus(ReservationStatus reservationStatus) {
+        this.reservationStatus = reservationStatus;
+    }
+
+    public void updateLoanDatesAfterApproval() {
+        this.loanDate = LocalDate.now();
+        this.loanDeadlineDate = LocalDate.now().plusDays(14);
     }
 }
