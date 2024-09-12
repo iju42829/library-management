@@ -6,4 +6,4 @@ spring:
     include: db, log, web, admin
 
   messages:
-    basename: errors, messages
+    basename: test, errors, messages
