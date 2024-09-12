@@ -13,6 +13,8 @@ public interface BookReservationRepository extends JpaRepository<BookReservation
 
     Long countByMemberIdAndReservationStatusIn(Long memberId, List<ReservationStatus> reservationStatuses);
 
+    List<BookReservation> findAllByReservationStatus(ReservationStatus reservationStatus);
+
     @EntityGraph(attributePaths = {"member", "book"})
     Slice<BookReservation> findByMemberUsernameContaining(String username, Pageable pageable);
 }

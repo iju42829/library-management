@@ -1,12 +1,14 @@
 package com.example.library.library_management.controller;
 
 import com.example.library.library_management.controller.argumentResolver.Login;
+import com.example.library.library_management.domain.constants.LoanAccessStatus;
 import com.example.library.library_management.dto.book.request.BookCreateRequest;
 import com.example.library.library_management.dto.book.request.BookUpdateRequest;
 import com.example.library.library_management.dto.book.response.BookDetailResponse;
 import com.example.library.library_management.dto.book.response.BookListResponse;
 import com.example.library.library_management.dto.member.MemberSessionDto;
 import com.example.library.library_management.service.book.BookService;
+import com.example.library.library_management.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +31,7 @@ import static com.example.library.library_management.controller.constants.BookCo
 public class BookController {
 
     private final BookService bookService;
+    private final MemberService memberService;
 
     @ModelAttribute("memberSessionDto")
     public MemberSessionDto addMemberSessionDto(@Login MemberSessionDto memberSessionDto) {
@@ -54,10 +57,13 @@ public class BookController {
     }
     
     @GetMapping("/{bookId}")
-    public String retrieveBook(@PathVariable("bookId") Long bookId, Model model) {
+    public String retrieveBook(@ModelAttribute("memberSessionDto") MemberSessionDto memberSessionDto,
+                               @PathVariable("bookId") Long bookId, Model model) {
         BookDetailResponse bookDetailResponse = bookService.getBookForDetail(bookId);
+        LoanAccessStatus memberLoanAccessStatus = memberService.getMemberLoanAccessStatus(memberSessionDto.getUsername());
 
         model.addAttribute("bookDetailResponse", bookDetailResponse);
+        model.addAttribute("memberLoanAccessStatus", memberLoanAccessStatus);
 
         return "book/detail-books";
     }

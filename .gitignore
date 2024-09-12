@@ -42,3 +42,4 @@ out/
 /src/main/resources/errors.properties
 /src/main/resources/messages.properties
 /src/main/resources/application-admin.properties
+/src/main/resources/test.properties
