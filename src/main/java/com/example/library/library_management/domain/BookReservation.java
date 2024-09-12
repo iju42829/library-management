@@ -56,8 +56,8 @@ public class BookReservation extends BaseTimeEntity {
         this.reservationStatus = reservationStatus;
     }
 
-    public void updateLoanDatesAfterApproval() {
+    public void updateLoanDatesAfterApproval(Long time) {
         this.loanDate = LocalDate.now();
-        this.loanDeadlineDate = LocalDate.now().plusDays(14);
+        this.loanDeadlineDate = LocalDate.now().plusDays(time);
     }
 }
