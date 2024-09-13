@@ -13,6 +13,7 @@ import com.example.library.library_management.exception.member.MemberNotFoundExc
 import com.example.library.library_management.repository.BookRepository;
 import com.example.library.library_management.repository.BookReservationRepository;
 import com.example.library.library_management.repository.MemberRepository;
+import com.example.library.library_management.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -32,24 +33,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookReservationServiceImpl implements BookReservationService {
 
-    private final BookRepository bookRepository;
     private final BookReservationRepository bookReservationRepository;
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final BookService bookService;
 
     @Override
     public Long reserveBook(String username, Long bookId) {
-        Member member = getMemberByUsername(username);
+        Member member = memberService.getMemberByUsername(username);
 
         if (member.getLoanAccessStatus().equals(LoanAccessStatus.UNAVAILABLE)) {
             throw new RuntimeException();
         }
 
-        Book book = getBookById(bookId);
+        Book book = bookService.getBookById(bookId);
 
         validateReservationLimit(member);
 
-        validateBookQuantity(book);
+        bookService.validateBookQuantity(book);
 
         book.changeQuantity(book.getQuantity() - 1);
 
@@ -138,24 +139,6 @@ public class BookReservationServiceImpl implements BookReservationService {
         return bookReservationRepository
                 .findById(bookReservationId)
                 .orElseThrow();
-    }
-
-    private Member getMemberByUsername(String username) {
-        return memberRepository
-                .findByUsername(username)
-                .orElseThrow(MemberNotFoundException::new);
-    }
-
-    private Book getBookById(Long bookId) {
-        return bookRepository
-                .findById(bookId)
-                .orElseThrow(BookNotFoundException::new);
-    }
-
-    private void validateBookQuantity(Book book) {
-        if (book.getQuantity() <= 0) {
-            throw new BookNotEnoughQuantityException();
-        }
     }
 
     private void validateReservationLimit(Member member) {

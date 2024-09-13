@@ -5,6 +5,7 @@ import com.example.library.library_management.dto.book.request.BookCreateRequest
 import com.example.library.library_management.dto.book.request.BookUpdateRequest;
 import com.example.library.library_management.dto.book.response.BookDetailResponse;
 import com.example.library.library_management.dto.book.response.BookListResponse;
+import com.example.library.library_management.exception.book.BookNotEnoughQuantityException;
 import com.example.library.library_management.exception.book.BookNotFoundException;
 import com.example.library.library_management.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -80,5 +81,19 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook(Long bookId) {
         bookRepository.deleteById(bookId);
+    }
+
+    @Override
+    public Book getBookById(Long bookId) {
+        return bookRepository
+                .findById(bookId)
+                .orElseThrow(BookNotFoundException::new);
+    }
+
+    @Override
+    public void validateBookQuantity(Book book) {
+        if (book.getQuantity() <= 0) {
+            throw new BookNotEnoughQuantityException();
+        }
     }
 }

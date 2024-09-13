@@ -1,5 +1,6 @@
 package com.example.library.library_management.service.book;
 
+import com.example.library.library_management.domain.Book;
 import com.example.library.library_management.dto.book.request.BookCreateRequest;
 import com.example.library.library_management.dto.book.request.BookUpdateRequest;
 import com.example.library.library_management.dto.book.response.BookDetailResponse;
@@ -18,5 +19,9 @@ public interface BookService {
 
     BookDetailResponse getBookForDetail(Long bookId);
 
+    Book getBookById(Long bookId);
+
     void deleteBook(Long bookId);
+
+    void validateBookQuantity(Book book);
 }
