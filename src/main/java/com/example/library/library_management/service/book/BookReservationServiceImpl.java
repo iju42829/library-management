@@ -7,12 +7,9 @@ import com.example.library.library_management.domain.constants.LoanAccessStatus;
 import com.example.library.library_management.domain.constants.ReservationStatus;
 import com.example.library.library_management.dto.book.response.BookReservationListResponse;
 import com.example.library.library_management.exception.book.BookLimitExceededException;
-import com.example.library.library_management.exception.book.BookNotEnoughQuantityException;
-import com.example.library.library_management.exception.book.BookNotFoundException;
-import com.example.library.library_management.exception.member.MemberNotFoundException;
-import com.example.library.library_management.repository.BookRepository;
+import com.example.library.library_management.exception.book.BookReservationNotFoundException;
+import com.example.library.library_management.exception.member.MemberCannotReserveBookException;
 import com.example.library.library_management.repository.BookReservationRepository;
-import com.example.library.library_management.repository.MemberRepository;
 import com.example.library.library_management.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +40,7 @@ public class BookReservationServiceImpl implements BookReservationService {
         Member member = memberService.getMemberByUsername(username);
 
         if (member.getLoanAccessStatus().equals(LoanAccessStatus.UNAVAILABLE)) {
-            throw new RuntimeException();
+            throw new MemberCannotReserveBookException();
         }
 
         Book book = bookService.getBookById(bookId);
@@ -94,13 +91,9 @@ public class BookReservationServiceImpl implements BookReservationService {
     public Long returnBookReservation(Long bookReservationId) {
         BookReservation bookReservation = getBookReservationById(bookReservationId);
 
+        updateReservationStatusAndQuantity(bookReservation, ReservationStatus.RETURNED);
+
         if (bookReservation.getLoanDeadlineDate().isBefore(LocalDate.now())) {
-            bookReservation.changeStatus(ReservationStatus.RETURNED);
-
-            Book book = bookReservation.getBook();
-
-            book.changeQuantity(book.getQuantity() + 1);
-
             Member member = bookReservation.getMember();
             member.changeLoanAccessStatus(LoanAccessStatus.UNAVAILABLE);
 
@@ -108,15 +101,6 @@ public class BookReservationServiceImpl implements BookReservationService {
 
             member.changeReservationLockDate(LocalDate.now().plusDays(days));
         }
-
-        else {
-            bookReservation.changeStatus(ReservationStatus.RETURNED);
-
-            Book book = bookReservation.getBook();
-
-            book.changeQuantity(book.getQuantity() + 1);
-        }
-
 
         return bookReservation.getId();
     }
@@ -135,10 +119,32 @@ public class BookReservationServiceImpl implements BookReservationService {
         }
     }
 
+    @Scheduled(cron = "0 15 18 * * ?")
+    public void scheduledCancelBookReservations() {
+        LocalDate today = LocalDate.now();
+
+        List<BookReservation> reservations = bookReservationRepository
+                .findAllByReservationStatus(ReservationStatus.RESERVATION);
+
+        for (BookReservation reservation : reservations) {
+            if (reservation.getExpiryReservationDate().isBefore(today) || reservation.getExpiryReservationDate().isEqual(today)) {
+                updateReservationStatusAndQuantity(reservation, ReservationStatus.CANCELLATION);
+            }
+        }
+    }
+
+    private void updateReservationStatusAndQuantity(BookReservation reservation, ReservationStatus reservationStatus) {
+        Book book = reservation.getBook();
+
+        book.changeQuantity(book.getQuantity() + 1);
+
+        reservation.changeStatus(reservationStatus);
+    }
+
     private BookReservation getBookReservationById(Long bookReservationId) {
         return bookReservationRepository
                 .findById(bookReservationId)
-                .orElseThrow();
+                .orElseThrow(BookReservationNotFoundException::new);
     }
 
     private void validateReservationLimit(Member member) {
