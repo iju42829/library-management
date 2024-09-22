@@ -8,6 +8,16 @@
 <nav th:replace="~{layouts/navbar :: nav}"></nav>
 
 <main class="container content mt-4">
+    <section>
+        <h2 class="mb-4">도서조회</h2>
+        <form th:action="@{/books}" th:method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="title" class="form-control rounded" placeholder="도서 이름 입력">
+                <button class="btn btn-primary ms-2 rounded" type="submit">검색</button>
+            </div>
+        </form>
+    </section>
+
     <section class="row row-cols-1 row-cols-md-3 g-4">
         <article class="col" th:each="book : ${books}">
             <div class="card h-100 shadow-sm">
