@@ -57,8 +57,83 @@
             </tbody>
         </table>
     </section>
+
+    <h2 class="mt-4">댓글 추가</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="commentForm" th:object="${commentCreateRequest}" th:action="@{/comments}" th:method="post">
+                <div class="mb-3">
+                    <label th:for="content" class="form-label">댓글 작성</label>
+                    <textarea class="form-control" th:field="*{content}" rows="3" placeholder="댓글을 입력하세요."></textarea>
+                    <p id="content-error" class="text-danger"></p>
+                    <input type="hidden" id="bookId" name="bookId" th:value="${bookDetailResponse.id}">
+                    <input type="hidden" id="username" name="username" th:value="${memberSessionDto.username}">
+                </div>
+                <button type="submit" class="btn btn-primary">작성하기</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="commentList"></div>
 </main>
 
 <footer th:replace="~{layouts/footer :: footer}"></footer>
 </body>
+
+<script>
+    $(document).ready(function () {
+        const bookId = $('#bookId').val();
+
+        const queryString = window.location.search;
+
+        const urlParams = new URLSearchParams(queryString);
+
+        const page = urlParams.get('page') || 1;
+
+        $.ajax({
+            type: "get",
+            url: "/comments",
+
+            data: {
+                "page" : page,
+                "bookId" : bookId
+            },
+
+            success: function (res) {
+                $('#commentList').html(res);
+            },
+
+            error: function () {
+                console.log("comment list rendering error");
+            }
+        })
+    })
+
+    $('#commentForm').submit(function(e) {
+        e.preventDefault();
+
+        const commentData = new FormData(this);
+
+        $.ajax({
+            type: "post",
+            url: "/comments",
+
+            data: commentData,
+
+            contentType: false,
+            processData: false,
+
+            success: function (res) {
+                $('#commentList').replaceWith(res);
+                $('#content').val('');
+            },
+
+            error: function () {
+                $('#content-error').text('댓글 입력은 필수입니다.');
+            }
+        })
+    })
+
+</script>
 </html>
