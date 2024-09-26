@@ -6,6 +6,7 @@ import com.example.library.library_management.dto.book.request.BookCreateRequest
 import com.example.library.library_management.dto.book.request.BookUpdateRequest;
 import com.example.library.library_management.dto.book.response.BookDetailResponse;
 import com.example.library.library_management.dto.book.response.BookListResponse;
+import com.example.library.library_management.dto.comment.request.CommentCreateRequest;
 import com.example.library.library_management.dto.member.MemberSessionDto;
 import com.example.library.library_management.service.book.BookService;
 import com.example.library.library_management.service.member.MemberService;
@@ -58,12 +59,15 @@ public class BookController {
     
     @GetMapping("/{bookId}")
     public String retrieveBook(@ModelAttribute("memberSessionDto") MemberSessionDto memberSessionDto,
-                               @PathVariable("bookId") Long bookId, Model model) {
+                               @PathVariable("bookId") Long bookId,
+                               @RequestParam(defaultValue = "1") int page,
+                               Model model) {
         BookDetailResponse bookDetailResponse = bookService.getBookForDetail(bookId);
         LoanAccessStatus memberLoanAccessStatus = memberService.getMemberLoanAccessStatus(memberSessionDto.getUsername());
 
         model.addAttribute("bookDetailResponse", bookDetailResponse);
         model.addAttribute("memberLoanAccessStatus", memberLoanAccessStatus);
+        model.addAttribute("commentCreateRequest", new CommentCreateRequest());
 
         return "book/detail-books";
     }
